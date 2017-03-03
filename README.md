@@ -1,12 +1,11 @@
-*******************************************************************************************
-		MUltipactor in Lower Hybrid antenna waveguides
-				MULH
+# MUltipactor in Lower Hybrid antenna waveguides (MULH)
 
 This code does a power sweep to calculate at which point the multipactor
 starts to develop inside a single rectangular waveguide.
 EM fields can be resolved analytically for the TE10 mode of a rectangular
 waveguide, or through the FDTD method with a TE10 excited at one end of the guide, or other
 fields could be imported (e.g. from COMSOL).
+
 The particle wall interaction is modeled using G. Chen, L. Liu (2011)
 ejection-collection algorithm but the actual method for deciding between
 absorption, elastic or inelastic collision or secondaries has been slightly
@@ -45,9 +44,11 @@ The MULH parent directory contains four subfolders.
 To run the code go to the directory where the makefile is (execs) in the
 terminal.
 Then run the following commands:
+```
 make
 export LD_LIBRARY_PATH="path to executable"
 ./MULH
+```
 
 The code was developed and worked well with the gfortran compiler.
 It hasn't been tried with other compilers.
@@ -64,7 +65,5 @@ Dartmouth College
 Hanover, NH 03755
 USA
 http://engineering.dartmouth.edu/~d24789f
-
-contact email: mfrancisquez@gmail.com
 
 Spring 2011 - Spring 2012
