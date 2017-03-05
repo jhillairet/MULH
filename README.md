@@ -67,3 +67,7 @@ USA
 http://engineering.dartmouth.edu/~d24789f
 
 Spring 2011 - Spring 2012
+
+
+[![Travis Last Compilation Status](https://travis-ci.org/jhillairet/MULH.svg?branch=master)
+](https://travis-ci.org/jhillairet/MULH)
