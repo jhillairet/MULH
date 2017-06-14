@@ -61,42 +61,43 @@ implicit none
 ! 
 ! NOTE = 2-7, 10, 11 and 12 can take a very long time so it is recommended to run them remotely (in a server)
 !
-atype = 1
+atype = 4
 
 !!!!!!!!! Geometry !!!!!!!!!
-b = 76			! Height of the waveguide in mm
-a = 14.65			! Width of the waveguide in mm
-lw = 100		! Depth/Length of the waveguide in mm. If changed make sure there are still enough cells per wavelength
-lwu = 2000		! Upper waveguide length (if atype==2)
+b = 70			! Height of the waveguide in mm
+a = 8			! Width of the waveguide in mm
+lw = 150		! Depth/Length of the waveguide in mm. If changed make sure there are still enough cells per wavelength
+lwu = 160		! Upper waveguide length (if atype==2)
 
-NOC_lambda = 20        ! Number of Cells per wavelength
-NOC_lambdau = 128        ! Upper number of Cells per wavelength (for atype==3)
+NOC_lambda = 20		! Number of Cells per wavelength
+NOC_lambdau = 50	! Upper number of Cells per wavelength (for atype==3)
  CLfactor = 0.95	! Factor to make sure Courant-Levy condition is obeyed. Decrease CLfactor for smaller time step
-Prec = 0.1             ! Threshold precision (dB)
+Prec = 0.1		! Threshold precision (dB)
 
 eta = mu_0 * c
 !!!!!!!!! Input Wave/Field solver !!!!!!!!!
 f_I = 3.7e9	! Frequency of input wave in Hz
-lambda = c/f_I  ! Wavelength
-Pl0 = 16000            ! Lower power limit (watts)
-Pu0 = anint( ((10e5)**2) * (a/1000.) * (b/1000.) * sqrt(1-(lambda/(2*(b/1000.)))**2) / (4*eta) )      ! Upper power limit (watts)
+lambda = c/f_I	! Wavelength
+Pl0 = 1.0e4	! Lower power limit (watts)
+Pu0 = 1.0e6
+!Pu0 = anint( ((10e5)**2) * (a/1000.) * (b/1000.) * sqrt(1-(lambda/(2*(b/1000.)))**2) / (4*eta) )      ! Upper power limit (watts)
 
-fields = 2	! Field solver. =1 FDTD, =2 analytic TE10 mode, =3 exported from other solver(need NOC_PML=1 w/ fields=3)
+fields = 1	! Field solver. =1 FDTD, =2 analytic TE10 mode, =3 exported from other solver(need NOC_PML=1 w/ fields=3)
 ramp = 1	! Increase fields slowly over ramp periods, integer
 NOC_PML = 1	! Number Of Cells in PML, integer
 R_max = 1e-10	! Reflection error for normally incident wave (as a fraction)
 m_PML = 3	! PML grading order, integer
 
 !!!!!!!!!! Static DC magnetic field (poloidal + toroidal). Gauss format, e.g. 2/10000. Minimum field allowed = 1G!!!!!!!!!
-sBx = 0.                ! Toroidal magnetic field at plasma center (T)
-sBxu = 0.               ! Upper toroidal magnetic field at plasma center (T) (for atype==4)
-sBy = 0.                ! Poloidal magnetic field in waveguide (T)
+sBx = 1.0e-3		! Toroidal magnetic field at plasma center (T)
+sBxu = 1.0e-2		! Upper toroidal magnetic field at plasma center (T) (for atype==4)
+sBy = 0.		! Poloidal magnetic field in waveguide (T)
 sByu = 0.		! Upper poloidal magnetic field in waveguide (T)
-sBz = 0.                ! Radial magnetic field in waveguide (T)
+sBz = 0.		! Radial magnetic field in waveguide (T)
 sBzu = 0.		! Upper radial magnetic field in waveguide (T)
 
 !!!!!!!!!! Particles !!!!!!!!!
-Np = 100               ! Number of primary particles (has to be even, preferably multiples of 16)
+Np = 100	! Number of primary particles (has to be even, preferably multiples of 16)
 vth = 5		! Initial energy of seed electrons (eV), integer
 vra = sqrt(2.)	! Ratio of vth_perpendicular to vth_parallel (sqrt(2) for isotropic)
 px_i = 3	! Position of seed e 1=Side walls 2=4 planes parallel to side walls 3= Randomly scattered in centered region
@@ -173,7 +174,6 @@ elseif (atype == 2 .OR. atype == 4 .OR. atype == 5 .OR. atype == 6) then
     endif
   enddo
 
-
   if (iu/il >= 10) then
 
     ! Calculate the order of magnitude of upper parameter
@@ -190,7 +190,7 @@ elseif (atype == 2 .OR. atype == 4 .OR. atype == 5 .OR. atype == 6) then
 
     ! Determine the length of the array containing all the parameters
     j = 10 - il/(10**i) + 9*(ip-i-1) + iu/(10**ip)
-
+    write(*,*) 'Cas 1, j = ', j
     allocate(is(j))
 
     ! Populate the array containing all parameters
@@ -212,6 +212,7 @@ elseif (atype == 2 .OR. atype == 4 .OR. atype == 5 .OR. atype == 6) then
 
     ! Determine the length of the array containing all the lengths
     j = (iu - il)*2/(10**i) + 1
+    write(*,*) 'Cas 2, j = ', j
     allocate(is(j))
 
     ! Populate the array containing all the lengths

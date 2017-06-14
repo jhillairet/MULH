@@ -131,9 +131,11 @@ Nt = Np + Np*Ns			! Total number of particles tracked
 if (INT(a*1000)==8 .AND. INT(b*1000)==70) then
     r0 = 2.96		! Radial position of plasma center
     rLH = 3.93		! Radial position (in tokamak) of grill mouth
+    if(n==0) print*, 'ToreSupra_C3 detected'
 else if (INT(a*1000)==9 .AND. INT(b*1000)==72) then
     r0 = 2.96
     rLH = 3.93
+    if(n==0) print*, 'JET detected'
 end if
 
 ! Modify Vaughan model to match E1
@@ -493,7 +495,7 @@ do while (complete == 0)
       endif	!!!!!!!!!!! end of pstat==1 if
 
       if (full .AND. sum(pstat, MASK = pstat .EQ. 3)==0 .AND. sum(pstat, MASK = pstat .EQ. 4)==0) then
-	!pact = Nt
+	write(*,*) 'Condition if pas comprise. Voir multipac.f90 ligne 498' !pact = Nt
 	exit
       endif
 
