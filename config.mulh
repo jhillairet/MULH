@@ -1,1 +1,49 @@
- 
+1		! atype
+70		! b
+8		! a
+150		! lw
+160		! lwu
+20		! NOC_lambda
+50		! NOC_lambdau
+0.95		! CLfactor
+0.1		! Prec
+3.7e9		! f_I
+10000		! Pl0
+1000000		! Pu0
+1		! fields
+1		! ramp
+1		! NOC_PML
+1e-10		! R_max
+3		! m_PML
+0.		! sBx
+0.		! sBxu
+0.		! sBy
+0.		! sByu
+0.		! sBz
+0.		! sBzu
+100		! Np
+5		! vth
+1.414213562	! vra a remplacer par sqrt(2)
+3		! px_i
+4		! fmax
+250		! nsamplev
+3		! launch
+1		! seec
+1		! ReRr
+35		! E1
+165		! Emax
+0.5		! delta_b
+2.3		! deltamax
+1		! p_n
+1		! kse
+1		! ks
+1		! Eom
+4		! Ns
+7.5e-3		! a_lara
+29		! z_lara
+'copper'	! mat
+0		! psave
+
+
+
+
