@@ -9,6 +9,7 @@ Created on Thu Jun 15 11:03:24 2017
 import numpy as np
 import os as os
 import shutil
+from subprocess import call
 
 atype = 1
 
@@ -82,14 +83,23 @@ mat = 'copper'  # Material
 #==============================================================================
 psave = 0	# Save particle position and velocity every psave iteration, =0 for not saving
 
+
+
+
+
 #==============================================================================
-# #
-# #
-# #		END OF USER INPUTS
-# #
-# #*************************************************************************************************************************
+# -------------------------END OF USER INPUTS----------------------------------
 #==============================================================================
-os.mkdir('tempconfig')
+
+
+
+
+
+#==============================================================================
+# Store datas in config.mulh
+#==============================================================================
+if not(os.path.exists('tempconfig')):
+    os.mkdir('tempconfig')
 np.savetxt('tempconfig/temp1_config.txt', (atype,b,a,lw,lwu,NOC_lambda,NOC_lambdau), fmt = '%i')
 np.savetxt('tempconfig/temp2_config.txt',(CLfactor,Prec), fmt= '%f')
 np.savetxt('tempconfig/temp3_config.txt', [f_I], fmt = '%e')
@@ -115,3 +125,11 @@ with open('config.mulh', 'w') as outfile:
         with open(fname) as infile:
             outfile.write(infile.read())
 shutil.rmtree('tempconfig')
+
+
+
+
+#==============================================================================
+# Compile and run MULH
+#==============================================================================
+os.system('make && cd bin/ && ./MULH')
