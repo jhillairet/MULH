@@ -38,7 +38,8 @@ use multipac
 use constants
 use reshape_array
 implicit none
-
+character(42) :: output_path
+character(42) :: project_path = '../../Work_MULH'
  call date_and_time(DATE=rundate,TIME=runtime)
 !****************************************************************************************************************************
 ! 			USER INPUTS
@@ -61,70 +62,71 @@ implicit none
 ! 
 ! NOTE = 2-7, 10, 11 and 12 can take a very long time so it is recommended to run them remotely (in a server)
 !
-open(unit=1, file='../config.mulh',status='old')
-read(1,*) atype
+
+open(unit=30, file=trim(project_path)//'/config.mulh',status='old')
+read(30,*) atype
 
 !!!!!!!!! Geometry !!!!!!!!!
-read(1,*) b		! Height of the waveguide in mm
-read(1,*) a		! Width of the waveguide in mm
-read(1,*) lw		! Depth/Length of the waveguide in mm. If changed make sure there are still enough cells per wavelength
-read(1,*) lwu		! Upper waveguide length (if atype==2)
-read(1,*) NOC_lambda	! Number of Cells per wavelength
-read(1,*) NOC_lambdau	! Upper number of Cells per wavelength (for atype==3)
-read(1,*) CLfactor	! Factor to make sure Courant-Levy condition is obeyed. Decrease CLfactor for smaller time step
-read(1,*) Prec		! Threshold precision (dB)
+read(30,*) b		! Height of the waveguide in mm
+read(30,*) a		! Width of the waveguide in mm
+read(30,*) lw		! Depth/Length of the waveguide in mm. If changed make sure there are still enough cells per wavelength
+read(30,*) lwu		! Upper waveguide length (if atype==2)
+read(30,*) NOC_lambda	! Number of Cells per wavelength
+read(30,*) NOC_lambdau	! Upper number of Cells per wavelength (for atype==3)
+read(30,*) CLfactor	! Factor to make sure Courant-Levy condition is obeyed. Decrease CLfactor for smaller time step
+read(30,*) Prec		! Threshold precision (dB)
 
 eta = mu_0 * c
 !!!!!!!!! Input Wave/Field solver !!!!!!!!!
-read(1,*) f_I	! Frequency of input wave in Hz
+read(30,*) f_I	! Frequency of input wave in Hz
 lambda = c/f_I	! Wavelength
-read(1,*) Pl0	! Lower power limit (watts)
-read(1,*) Pu0	! Upper power limit (watts)
+read(30,*) Pl0	! Lower power limit (watts)
+read(30,*) Pu0	! Upper power limit (watts)
 
-read(1,*) fields	! Field solver. =1 FDTD, =2 analytic TE10 mode, =3 exported from other solver(need NOC_PML=1 w/ fields=3)
-read(1,*) ramp		! Increase fields slowly over ramp periods, integer
-read(1,*) NOC_PML	! Number Of Cells in PML, integer
-read(1,*) R_max		! Reflection error for normally incident wave (as a fraction)
-read(1,*) m_PML		! PML grading order, integer
+read(30,*) fields	! Field solver. =1 FDTD, =2 analytic TE10 mode, =3 exported from other solver(need NOC_PML=1 w/ fields=3)
+read(30,*) ramp		! Increase fields slowly over ramp periods, integer
+read(30,*) NOC_PML	! Number Of Cells in PML, integer
+read(30,*) R_max	! Reflection error for normally incident wave (as a fraction)
+read(30,*) m_PML	! PML grading order, integer
 
 !!!!!!!!!! Static DC magnetic field (poloidal + toroidal). Gauss format, e.g. 2/10000. Minimum field allowed = 1G!!!!!!!!!
-read(1,*) sBx		! Toroidal magnetic field at plasma center (T)
-read(1,*) sBxu		! Upper toroidal magnetic field at plasma center (T) (for atype==4)
-read(1,*) sBy		! Poloidal magnetic field in waveguide (T)
-read(1,*) sByu		! Upper poloidal magnetic field in waveguide (T)
-read(1,*) sBz		! Radial magnetic field in waveguide (T)
-read(1,*) sBzu		! Upper radial magnetic field in waveguide (T)
+read(30,*) sBx		! Toroidal magnetic field at plasma center (T)
+read(30,*) sBxu		! Upper toroidal magnetic field at plasma center (T) (for atype==4)
+read(30,*) sBy		! Poloidal magnetic field in waveguide (T)
+read(30,*) sByu		! Upper poloidal magnetic field in waveguide (T)
+read(30,*) sBz		! Radial magnetic field in waveguide (T)
+read(30,*) sBzu		! Upper radial magnetic field in waveguide (T)
 
 !!!!!!!!!! Particles !!!!!!!!!
-read(1,*) Np		! Number of primary particles (has to be even, preferably multiples of 16)
-read(1,*) vth		! Initial energy of seed electrons (eV), integer
-read(1,*) vra		! Ratio of vth_perpendicular to vth_parallel (sqrt(2) for isotropic)
-read(1,*) px_i		! Position of seed e 1=Side walls 2=4 planes parallel to side walls 3= Randomly scattered in centered region
-read(1,*) fmax		! vth*fMax is the largest velocity represented for the sample array fSample
-read(1,*) nsamplev	! # of sample fraction values for creating a Maxwellian velocity distribution function
-read(1,*) launch	! Launch method 1=each at a different phase [0,360] 2=range of phases every 5 or 10 degrees [0,360] 3=random
+read(30,*) Np		! Number of primary particles (has to be even, preferably multiples of 16)
+read(30,*) vth		! Initial energy of seed electrons (eV), integer
+read(30,*) vra		! Ratio of vth_perpendicular to vth_parallel (sqrt(2) for isotropic)
+read(30,*) px_i		! Position of seed e 1=Side walls 2=4 planes parallel to side walls 3= Randomly scattered in centered region
+read(30,*) fmax		! vth*fMax is the largest velocity represented for the sample array fSample
+read(30,*) nsamplev	! # of sample fraction values for creating a Maxwellian velocity distribution function
+read(30,*) launch	! Launch method 1=each at a different phase [0,360] 2=range of phases every 5 or 10 degrees [0,360] 3=random
 
 !!!!!!!!!! Particle-Wall interaction !!!!!!!!!
-read(1,*) seec		! SEE model, =1 Modified Vaughan, =2 Furman & Pivi, =3 Cheng w/ de Lara Re/Rr, =4 FEST3Dish?
-read(1,*) ReRr		! Contributions from elastically (Re) and rediffused (Rr) electrons. =1 de Lara, =2 CERN LHC report
-read(1,*) E1		! First crossover
-read(1,*) Emax		! Emax(delta=max,theta=0) in eV
-read(1,*) delta_b	! Yield below E_0
-read(1,*) deltamax	! Maximum secondary electron yield (at Emax) for normal incidence (theta=0)
-read(1,*) p_n		! p_n phenomelogical parameter in Furman & Pivi, ==2 in Cheng
-read(1,*) kse		! Energy Roughness factor, [0,2], 0=rough,2=smooth
-read(1,*) ks		! Angle Roughness factor, [0,2], 0=rough,2=smooth
-read(1,*) Eom		! Av energy of Maxwellian distribution of secondary electrons emitted (eV)
-read(1,*) Ns		! Number of secondary electrons simulated (in multiples of Np)
-read(1,*) a_lara	! Material dependent coeff for elastic contribution in de Lara's paper
-read(1,*) z_lara	! Atomic number of coating material in Lara's fit
-read(1,*) mat		! Material
+read(30,*) seec		! SEE model, =1 Modified Vaughan, =2 Furman & Pivi, =3 Cheng w/ de Lara Re/Rr, =4 FEST3Dish?
+read(30,*) ReRr		! Contributions from elastically (Re) and rediffused (Rr) electrons. =1 de Lara, =2 CERN LHC report
+read(30,*) E1		! First crossover
+read(30,*) Emax		! Emax(delta=max,theta=0) in eV
+read(30,*) delta_b	! Yield below E_0
+read(30,*) deltamax	! Maximum secondary electron yield (at Emax) for normal incidence (theta=0)
+read(30,*) p_n		! p_n phenomelogical parameter in Furman & Pivi, ==2 in Cheng
+read(30,*) kse		! Energy Roughness factor, [0,2], 0=rough,2=smooth
+read(30,*) ks		! Angle Roughness factor, [0,2], 0=rough,2=smooth
+read(30,*) Eom		! Av energy of Maxwellian distribution of secondary electrons emitted (eV)
+read(30,*) Ns		! Number of secondary electrons simulated (in multiples of Np)
+read(30,*) a_lara	! Material dependent coeff for elastic contribution in de Lara's paper
+read(30,*) z_lara	! Atomic number of coating material in Lara's fit
+read(30,*) mat		! Material
 
 ! Save outputs
-read(1,*) psave		! Save particle position and velocity every psave iteration, =0 for not saving
+read(30,*) psave	! Save particle position and velocity every psave iteration, =0 for not saving
+read(30,*) output_path	! Where batch results will be stored
 
-
-close(unit=1)
+close(unit=30)
 !
 !
 !		END OF USER INPUTS
@@ -191,7 +193,6 @@ elseif (atype == 2 .OR. atype == 4 .OR. atype == 5 .OR. atype == 6) then
 
     ! Determine the length of the array containing all the parameters
     j = 10 - il/(10**i) + 9*(ip-i-1) + iu/(10**ip)
-    write(*,*) 'Cas 1, j = ', j
     allocate(is(j))
 
     ! Populate the array containing all parameters
@@ -213,7 +214,6 @@ elseif (atype == 2 .OR. atype == 4 .OR. atype == 5 .OR. atype == 6) then
 
     ! Determine the length of the array containing all the lengths
     j = (iu - il)*2/(10**i) + 1
-    write(*,*) 'Cas 2, j = ', j
     allocate(is(j))
 
     ! Populate the array containing all the lengths
@@ -374,13 +374,13 @@ do sw = 1,j
   !!!!!!!!!!!!!!!! Counters, flags & others !!!!!!!!!!!!!!!!!
   simno = 0		! Simulation number (within one power sweep)
   pro = .TRUE.		! Boolean indicating whether to proceed or not (due to error)
-  found = .FALSE.		! Flag indicating whether threshold has been found
+  found = .FALSE.	! Flag indicating whether threshold has been found
   multio = .FALSE.	! Indicate if multipactor occurred at all during power sweep
   existe = .FALSE.	! Folder w/ counter.txt for this study already exists
 
   Pl = Pl0		! Lower Power limit
   Pu = Pu0		! Upper Power limit
-  P = Pl                 ! Current Power delivered by waveguide (watts)
+  P = Pl		! Current Power delivered by waveguide (watts)
 
   pvms = 0.		! Average energy of all particles in time
 
@@ -436,7 +436,7 @@ do sw = 1,j
 
     rewind(unit=2)
     write(2,'(A6)') datecount	! Replace old date with new date
-    write(2,*) datecountn 		! Update counter
+    write(2,*) datecountn 	! Update counter
     close(unit=2)
 
   else
@@ -511,7 +511,7 @@ do sw = 1,j
     dirname = '../data/results/oscillations/'//trim(folder)
   endif
   call system('mkdir -p '//trim(dirname))
-
+ 
   open(unit=1,file=trim(dirname)//'/MULH_power_results.txt',status='new')
 
   open(unit=4,file=trim(dirname)//'/MULH_time_results.txt',status='unknown')
@@ -662,15 +662,20 @@ do sw = 1,j
   ! get ride of energies.txt file
   call system('rm '//trim(dirname)//'/energies.txt')
 
+
   write(*,*)'_____________________________________'
+  open(unit=31, file=trim(project_path)//'/'//trim(output_path),status='old', position='append')
   if (.NOT. multio) then
     write(*,*) ' **** NO BREAKDOWN FOUND **** '
+    write(31,*) ' **** NO BREAKDOWN FOUND **** ', sBx, sBy, sBz
   elseif (complete == 1) then
     write(*,*) 'Multipactor Threshold (W): ',Pl
+    write(31,*) Pl, sBx, sBy, sBz
   elseif (complete == 2) then
     write(*,*) 'Multipactor Threshold (W): ',P
+    write(31,*) P, sBx, sBy, sBz
   endif
-
+  close(unit = 31)
   call date_and_time(DATE=rundate,TIME=runtime)
   write(*,16) '===> Terminee le ',trim(rundate(7:8)),'/',trim(rundate(5:6)),'/',trim(rundate(3:4)), &
 	  '@',trim(runtime(1:2)),':',trim(runtime(3:4)),':',trim(runtime(5:6))
@@ -709,6 +714,8 @@ enddo
   ! unit=13 setup.txt: storing the setup used in this simulation inorder to plot particles in time
   ! unit=24 mean energy along each direction in time
   ! unit=25 enorm from PICCOLO (COMSOL) and comsolfields.m
+  ! unit=30 config.mulh: load all constants MULH needs in order to work
+  ! unit=31 date_hour.txt: save BD power 
 
 
 1 format(1X,A16,1X,F5.2,A2)
