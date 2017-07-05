@@ -38,8 +38,30 @@ use multipac
 use constants
 use reshape_array
 implicit none
-character(42) :: output_path
-character(42) :: project_path = '../../Work_MULH'
+character(70) :: config_path, output_path, name
+integer :: nArg, cptArg
+
+nArg = command_argument_count()
+if(nArg == 2) then
+! loop across options
+  do cptArg = 1, nArg
+    call get_command_argument(cptArg, name)
+    select case(adjustl(name))
+      case("--help","-h")
+	write(*,*) "This is program MULHs.f90 : Version 0.1"
+      case default
+	if(cptArg == 1) then
+	  config_path = name
+	  write(*,*) "config_path : ", config_path
+	elseif(cptArg == 2) then
+	  output_path = name
+	  write(*,*) "output_path : ", output_path
+	endif
+      end select
+  end do
+end if
+
+
  call date_and_time(DATE=rundate,TIME=runtime)
 !****************************************************************************************************************************
 ! 			USER INPUTS
@@ -63,7 +85,7 @@ character(42) :: project_path = '../../Work_MULH'
 ! NOTE = 2-7, 10, 11 and 12 can take a very long time so it is recommended to run them remotely (in a server)
 !
 
-open(unit=30, file=trim(project_path)//'/config.mulh',status='old')
+open(unit=30, file=trim(config_path),status='old')
 read(30,*) atype
 
 !!!!!!!!! Geometry !!!!!!!!!
@@ -124,7 +146,6 @@ read(30,*) mat		! Material
 
 ! Save outputs
 read(30,*) psave	! Save particle position and velocity every psave iteration, =0 for not saving
-read(30,*) output_path	! Where batch results will be stored
 
 close(unit=30)
 !
@@ -664,22 +685,23 @@ do sw = 1,j
 
 
   write(*,*)'_____________________________________'
-  open(unit=31, file=trim(project_path)//'/'//trim(output_path),status='old', position='append')
+  open(unit=32, file=trim(output_path),status='unknown', position='append')
   if (.NOT. multio) then
     write(*,*) ' **** NO BREAKDOWN FOUND **** '
-    write(31,*) ' **** NO BREAKDOWN FOUND **** ', sBx, sBy, sBz
+    write(32,*) ' **** NO BREAKDOWN FOUND **** ', sBx, sBy, sBz
   elseif (complete == 1) then
     write(*,*) 'Multipactor Threshold (W): ',Pl
-    write(31,*) Pl, sBx, sBy, sBz
+    write(32,*) Pl, sBx, sBy, sBz
   elseif (complete == 2) then
     write(*,*) 'Multipactor Threshold (W): ',P
-    write(31,*) P, sBx, sBy, sBz
+    write(32,*) P, sBx, sBy, sBz
   endif
   close(unit = 31)
   call date_and_time(DATE=rundate,TIME=runtime)
   write(*,16) '===> Terminee le ',trim(rundate(7:8)),'/',trim(rundate(5:6)),'/',trim(rundate(3:4)), &
 	  '@',trim(runtime(1:2)),':',trim(runtime(3:4)),':',trim(runtime(5:6))
   write(*,*) 'Results written to ',trim(dirname)
+  write(*,*) 'Results temporarily saved to ', trim(output_path)
 
 
 enddo
@@ -715,7 +737,8 @@ enddo
   ! unit=24 mean energy along each direction in time
   ! unit=25 enorm from PICCOLO (COMSOL) and comsolfields.m
   ! unit=30 config.mulh: load all constants MULH needs in order to work
-  ! unit=31 date_hour.txt: save BD power 
+  ! unit=31 date_hour.txt: save BD power
+  ! unit=32 results.txt : file where datas should be stored
 
 
 1 format(1X,A16,1X,F5.2,A2)
