@@ -10,8 +10,6 @@ import numpy as np
 import os as os
 #import shutil
 import subprocess as sub
-import time
-import shutil
 import fileinput
 
 #==============================================================================
@@ -44,7 +42,7 @@ class MULHcl(object):
     
         Results will be stored in the MULH/data/results_python folder.
         """
-    MULH_PATH = '/Home/AP252436/MULH_essais/'
+    MULH_PATH = '/Home/AP252436/MULH/'
     BIN_PATH = MULH_PATH + 'bin/'
     counter = 0 #Counter in order to compile MULH only once
     error_counter = 0 # Counts every time a computation has to be made once again
@@ -355,7 +353,7 @@ class MULHcl(object):
         
 if __name__ == "__main__":  
     # Absolute path of the project
-    project_path = '/Home/AP252436/Work_MULH_essais/'
+    project_path = '/Home/AP252436/Work_MULH/'
     
     # Output path
     results_file = 'results/results.txt'

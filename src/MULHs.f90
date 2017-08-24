@@ -48,7 +48,7 @@ if(nArg == 2) then
     call get_command_argument(cptArg, name)
     select case(adjustl(name))
       case("--help","-h")
-	write(*,*) "This is program MULHs.f90 : Version 0.1"
+	write(*,*) "First argument must be path to config file, second argument path to output file"
       case default
 	if(cptArg == 1) then
 	  config_path = name
@@ -688,7 +688,7 @@ do sw = 1,j
   open(unit=32, file=trim(output_path),status='unknown', position='append')
   if (.NOT. multio) then
     write(*,*) ' **** NO BREAKDOWN FOUND **** '
-    write(32,*) ' **** NO BREAKDOWN FOUND **** ', sBx, sBy, sBz
+    write(32,*) 1, sBx, sBy, sBz
   elseif (complete == 1) then
     write(*,*) 'Multipactor Threshold (W): ',Pl
     write(32,*) Pl, sBx, sBy, sBz
