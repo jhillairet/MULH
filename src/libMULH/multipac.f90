@@ -424,8 +424,8 @@ do while (complete == 0)
 	  call plocate(px1(m,:),d4x,x3,geo,pwall,Eii,Eip,Eri,Hii,Hip,Hri)
 
 	  ! Interpolate fields from nodes to particles
-	  pB1 = interB2particle(Hx1,Hy1,Hz1,Hii,Hip,Hri,pwall,sB,geo,px1(m,3))
-	  pB2 = interB2particle(Hx2,Hy2,Hz2,Hii,Hip,Hri,pwall,sB,geo,px1(m,3))
+	  pB1 = interB2particle(Hx1,Hy1,Hz1,Hii,Hip,Hri,pwall,sB,geo,px1(m,3),fields)
+	  pB2 = interB2particle(Hx2,Hy2,Hz2,Hii,Hip,Hri,pwall,sB,geo,px1(m,3),fields)
 	  pE2 = interE2particle(Ex2,Ey2,Ez2,Eii,Eip,Eri,pwall)
 
 	else if (fields == 2) then
@@ -467,7 +467,7 @@ do while (complete == 0)
 
 	  if (fields == 1 .OR. fields == 3) then
             ! Interpolate additional fields needed
-	    pB0 = interB2particle(Hx0,Hy0,Hz0,Hii,Hip,Hri,pwall,sB,geo,px1(m,3))
+	    pB0 = interB2particle(Hx0,Hy0,Hz0,Hii,Hip,Hri,pwall,sB,geo,px1(m,3),fields)
 	    pE1 = interE2particle(Ex1,Ey1,Ez1,Eii,Eip,Eri,pwall)
 
           elseif (fields == 2) then      

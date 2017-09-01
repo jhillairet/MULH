@@ -20,11 +20,11 @@ project_path = '/Home/AP252436/Work_MULH/Parallel_batch/'
 # config files
 config_file = 'config.mulh'
 
-B_xs = np.append(0, np.logspace(-3, 0, num=201))
+#B_xs = np.append(0, np.logspace(-3, 0, num=201))
 #B_xs = np.linspace(0.12, 0.14, num=41)
-
+B_xs = np.append(1,2)
 NB_RUNS = 1
-NB_PROCESSES = 6
+NB_PROCESSES = 1
 
 def run_and_write_result(mulh):
     param_name = 'sBx'

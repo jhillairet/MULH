@@ -1,7 +1,7 @@
 module inter2part
 
 contains
-function interB2particle(Hx,Hy,Hz,Hii,Hip,Hri,pwall,sB,geo,px_z) result(pB)
+function interB2particle(Hx,Hy,Hz,Hii,Hip,Hri,pwall,sB,geo,px_z,fields) result(pB)
 !*************************************************************************
 !			interB2particle
 !   Interpolate all three components of the magnetic field to
@@ -37,6 +37,7 @@ type(geo_t), intent(in) :: geo
 real(long) :: pB(3), r0, rLH, lw
 real(long), intent(in) :: sB(5)
 real(long), intent(in) :: px_z
+integer, intent(in) :: fields
 ! Dummy variables
 integer :: i, j, k
 real(long) :: fii(3), fip(3)
@@ -70,11 +71,18 @@ do i = 1,3
       fii(1) = fip(1) + fii(1)
       fip(1) = 0.
     endif
-
-    pB(i) = Hy(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hy(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
-		Hy(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hy(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
-		Hy(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hy(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
-		Hy(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hy(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3)
+    if (fields==1) then
+      pB(i) = Hy(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hy(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
+		  Hy(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hy(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
+		  Hy(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hy(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
+		  Hy(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hy(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3) + &
+		  sB(2)*r0/(mu_0*(rLH+lw-px_z)) ! 1/r decrease from the plasma center
+    else ! if the field is imported from an external solver, sB was already taken into account
+      pB(i) = Hy(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hy(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
+		  Hy(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hy(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
+		  Hy(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hy(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
+		  Hy(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hy(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3)
+    endif
 
   elseif (i == 1) then
     
@@ -89,12 +97,18 @@ do i = 1,3
       fip(2) = fip(2) + fii(2)
       fii(2) = 0.
     endif
-
-    pB(i) = Hx(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hx(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
-		Hx(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hx(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
-		Hx(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hx(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
-		Hx(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hx(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3) + &
-		sB(1)*r0/(mu_0*(rLH+lw-px_z))
+    if (fields==1) then
+      pB(i) = Hx(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hx(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
+		  Hx(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hx(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
+		  Hx(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hx(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
+		  Hx(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hx(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3) + &
+		  sB(1)*r0/(mu_0*(rLH+lw-px_z)) ! 1/r decrease from the plasma center
+    else ! if the field is imported from an external solver, sB was already taken into account
+      pB(i) = Hx(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hx(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
+		  Hx(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hx(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
+		  Hx(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hx(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
+		  Hx(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hx(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3)
+    end if
 
   elseif (i == 3) then
 
@@ -121,11 +135,18 @@ do i = 1,3
       fip(2) = fip(2) + fii(2)
       fii(2) = 0.
     endif
-
-    pB(i) = Hz(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hz(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
-		Hz(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hz(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
-		Hz(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hz(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
-		Hz(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hz(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3)
+    if (fields==1) then
+      pB(i) = Hz(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hz(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
+		  Hz(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hz(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
+		  Hz(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hz(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
+		  Hz(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hz(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3) + &
+		  sB(3) ! homogeneous radial field
+    else ! if the field is imported from an external solver, sB was already taken into account
+      pB(i) = Hz(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hz(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
+		  Hz(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hz(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
+		  Hz(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hz(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
+		  Hz(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hz(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3)
+    endif
 
   endif
 
