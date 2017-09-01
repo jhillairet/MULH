@@ -1,7 +1,7 @@
 module inter2part
 
 contains
-function interB2particle(Hx,Hy,Hz,Hii,Hip,Hri,pwall) result(pB)
+function interB2particle(Hx,Hy,Hz,Hii,Hip,Hri,pwall,sB,geo,px_z) result(pB)
 !*************************************************************************
 !			interB2particle
 !   Interpolate all three components of the magnetic field to
@@ -26,16 +26,25 @@ function interB2particle(Hx,Hy,Hz,Hii,Hip,Hri,pwall) result(pB)
 
 use precision_def
 use constants
+use def_types
 implicit none
 ! Subroutine arguments
 real(long), allocatable, intent(in) :: Hx(:,:,:), Hy(:,:,:), Hz(:,:,:)
 integer, intent(inout) :: Hii(3,3),Hip(3,3)
 real(long), intent(in) :: Hri(3,3)
 integer, intent(inout) :: pwall(4)
-real(long) :: pB(3)
+type(geo_t), intent(in) :: geo
+real(long) :: pB(3), r0, rLH, lw
+real(long), intent(in) :: sB(5)
+real(long), intent(in) :: px_z
 ! Dummy variables
 integer :: i, j, k
 real(long) :: fii(3), fip(3)
+
+!!!!!! Allocate variables !!!!!!
+lw = geo%lw
+r0 = sB(4)
+rLH = sB(5)
 
 ! Interpolate Hx to the particle
 pB = 0.
@@ -84,7 +93,8 @@ do i = 1,3
     pB(i) = Hx(Hii(i,1),Hii(i,2),Hii(i,3))*fii(1)*fii(2)*fii(3) + Hx(Hip(i,1),Hii(i,2),Hii(i,3))*fip(1)*fii(2)*fii(3) + &
 		Hx(Hii(i,1),Hip(i,2),Hii(i,3))*fii(1)*fip(2)*fii(3) + Hx(Hii(i,1),Hii(i,2),Hip(i,3))*fii(1)*fii(2)*fip(3) + &
 		Hx(Hip(i,1),Hip(i,2),Hii(i,3))*fip(1)*fip(2)*fii(3) + Hx(Hip(i,1),Hii(i,2),Hip(i,3))*fip(1)*fii(2)*fip(3) + &
-		Hx(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hx(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3)
+		Hx(Hii(i,1),Hip(i,2),Hip(i,3))*fii(1)*fip(2)*fip(3) + Hx(Hip(i,1),Hip(i,2),Hip(i,3))*fip(1)*fip(2)*fip(3) + &
+		sB(1)*r0/(mu_0*(rLH+lw-px_z))
 
   elseif (i == 3) then
 

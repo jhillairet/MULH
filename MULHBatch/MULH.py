@@ -300,17 +300,16 @@ class MULHcl(object):
         Returns:
             None
         """
+
         try:
             env = os.environ
             with sub.Popen(self._get_run_command(), shell=True, env=env, 
                        stdout=sub.PIPE, stderr=sub.PIPE, universal_newlines=True) as p:
                 for lines in p.stdout:
                     print(lines, end=' ') # Print MULH messages
-#            print('Debug renvoi None MULH.py l 311 ' + p.returncode)
         except OSError as e:
             printc('Error ! ' + e, color='error')
-#        print('MULH ligne 315')
-        
+
     
     def _get_run_command(self):
         """

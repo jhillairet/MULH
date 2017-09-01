@@ -203,8 +203,8 @@ if (fields == 1 .OR. fields == 3) then
   call plocate(pxf1,d4x,x3,geo,pwall,Eii,Eip,Eri,Hii,Hip,Hri)
 
   ! Interpolate fields from nodes to particles
-  wB1 = interB2particle(Hx1,Hy1,Hz1,Hii,Hip,Hri,pwall)
-  wB2 = interB2particle(Hx2,Hy2,Hz2,Hii,Hip,Hri,pwall)
+  wB1 = interB2particle(Hx1,Hy1,Hz1,Hii,Hip,Hri,pwall,sB,geo,px1(3))
+  wB2 = interB2particle(Hx2,Hy2,Hz2,Hii,Hip,Hri,pwall,sB,geo,px1(3))
   wE2 = interE2particle(Ex2,Ey2,Ez2,Eii,Eip,Eri,pwall)
 
 elseif (fields == 2) then
@@ -340,15 +340,15 @@ if (s > 0) then
             
       if (fields == 1 .OR. fields == 3) then
         ! Interpolate fields from grid to collision point
-	wB0 = interB2particle(Hx0,Hy0,Hz0,Hii,Hip,Hri,pwall)
+	wB0 = interB2particle(Hx0,Hy0,Hz0,Hii,Hip,Hri,pwall,sB,geo,px1(3))
 	wE1 = interE2particle(Ex1,Ey1,Ez1,Eii,Eip,Eri,pwall)
 
 	! Interpolate fields from grid to ejection point
 	call plocate(px2t(k,:),d4x,x3,geo,pwall,Eii,Eip,Eri,Hii,Hip,Hri)
 
 	! Interpolate fields from nodes to particles
-	eB1 = interB2particle(Hx1,Hy1,Hz1,Hii,Hip,Hri,pwall)
-	eB2 = interB2particle(Hx2,Hy2,Hz2,Hii,Hip,Hri,pwall)
+	eB1 = interB2particle(Hx1,Hy1,Hz1,Hii,Hip,Hri,pwall,sB,geo,px1(3))
+	eB2 = interB2particle(Hx2,Hy2,Hz2,Hii,Hip,Hri,pwall,sB,geo,px1(3))
 	eE2 = interE2particle(Ex2,Ey2,Ez2,Eii,Eip,Eri,pwall)
 
       elseif (fields == 2) then

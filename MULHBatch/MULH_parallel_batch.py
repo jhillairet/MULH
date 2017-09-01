@@ -23,9 +23,8 @@ config_file = 'config.mulh'
 B_xs = np.append(0, np.logspace(-3, 0, num=201))
 #B_xs = np.linspace(0.12, 0.14, num=41)
 
-
 NB_RUNS = 1
-NB_PROCESSES = 5
+NB_PROCESSES = 6
 
 def run_and_write_result(mulh):
     param_name = 'sBx'
@@ -68,7 +67,7 @@ def run_and_write_result(mulh):
     elif power==1: # Simulation complete without any multipac detected
         power = 0
 
-    with open('/Home/AP252436/Work_MULH/Parallel_batch/ter_Pth_vs_Bx_C3_SEY-MULH_1500electrons.csv','ba') as f_handle:   
+    with open('/Home/AP252436/Work_MULH/Parallel_batch/Pth_vs_real_Bx_C3_SEY-MULH_160electrons.csv','ba') as f_handle:   
         ## Tricks to save a row vector instead of a column one
         np.savetxt(f_handle, np.array([float(param), power])[np.newaxis], fmt='%f', delimiter = '\t')
 

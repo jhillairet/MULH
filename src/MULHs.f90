@@ -688,7 +688,7 @@ do sw = 1,j
   open(unit=32, file=trim(output_path),status='unknown', position='append')
   if (.NOT. multio) then
     write(*,*) ' **** NO BREAKDOWN FOUND **** '
-    write(32,*) 1, sBx, sBy, sBz
+    write(32,*) '1 ', sBx, sBy, sBz
   elseif (complete == 1) then
     write(*,*) 'Multipactor Threshold (W): ',Pl
     write(32,*) Pl, sBx, sBy, sBz
@@ -696,7 +696,7 @@ do sw = 1,j
     write(*,*) 'Multipactor Threshold (W): ',P
     write(32,*) P, sBx, sBy, sBz
   endif
-  close(unit = 31)
+  close(unit = 32)
   call date_and_time(DATE=rundate,TIME=runtime)
   write(*,16) '===> Terminee le ',trim(rundate(7:8)),'/',trim(rundate(5:6)),'/',trim(rundate(3:4)), &
 	  '@',trim(runtime(1:2)),':',trim(runtime(3:4)),':',trim(runtime(5:6))
