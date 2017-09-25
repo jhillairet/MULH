@@ -71,18 +71,18 @@ elseif (tipo == 2) then ! Electron is inelastically reflected
     vf = sqrt(2.*taus88()*Ep/me)
   endif
     
-  reflect_electron(1,i) = vf * cos(thetaf)      ! normal component of reflected velocity
+  reflect_electron(1,i) = vf * cos(thetaf)      ! Normal component of reflected velocity
     
   if (pvf1(3) == 0.) then
         
-    reflect_electron(1,j) = vf * sin(thetaf)
-    reflect_electron(1,3) = 0.
+    reflect_electron(1,j) = vf * sin(thetaf)	! If incident electron has no velocity along z,
+    reflect_electron(1,3) = 0.			! the reflected will not have one neither.
         
   else
     phi = atan(abs(pvf1(j)/pvf1(3)))    ! tan(phi) = ratio of velocities parallel to the surface
     
-    reflect_electron(1,j) = sin(phi) * vf * sin(thetaf)
-    reflect_electron(1,3) = cos(phi) * vf * sin(thetaf)
+    reflect_electron(1,j) = sin(phi) * vf * sin(thetaf) ! Reflected and incident electron have
+    reflect_electron(1,3) = cos(phi) * vf * sin(thetaf) ! same azimuthal angle. Justified ??
         
   endif
     

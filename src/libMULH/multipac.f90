@@ -550,7 +550,7 @@ do while (complete == 0)
       pactts(pactc) = time+dt
       pactps(pactc) = pact
     endif
-        
+
     ! Store average energy along each dimension for each power run
     pvm(1) = mean(0.5*me*(pv2(:,1)*pv2(:,1))/(-e))
     pvm(2) = mean(0.5*me*(pv2(:,2)*pv2(:,2))/(-e))
@@ -586,7 +586,7 @@ do while (complete == 0)
     close(unit=8)
     it = n
   endif
-  
+
 enddo		!!!!!!!!!!!! end of do while complete
 
 if (atype == 8 .OR. atype == 9) then
@@ -602,12 +602,12 @@ if (atype == 8 .OR. atype == 9) then
   endif
 
 endif
-
 !open(unit=10,file=trim(dirname)//'/SEYvsE.txt',status='unknown')
-!do i = 1,size(SEYvsE,3)
-!  write(10,13) SEYvsE(1,1,i),SEYvsE(1,2,i),SEYvsE(2,1,i), SEYvsE(2,2,i),SEYvsE(3,1,i),SEYvsE(3,2,i),SEYvsE(4,1,i),SEYvsE(4,2,i)
-!enddo
- !close(unit=10)
+open(unit=666,file='../data/SEYvsE3.txt',status='unknown')
+do i = 1,size(SEYvsE,3)
+  write(666,13) SEYvsE(1,1,i),SEYvsE(1,2,i),SEYvsE(2,1,i), SEYvsE(2,2,i),SEYvsE(3,1,i),SEYvsE(3,2,i),SEYvsE(4,1,i),SEYvsE(4,2,i)
+enddo
+close(unit=666)
 
 !!!!!! Save setup !!!!!!
 open(unit=13,file=trim(dirname)//'/setup.txt',status='unknown')

@@ -129,7 +129,7 @@ read(30,*) nsamplev	! # of sample fraction values for creating a Maxwellian velo
 read(30,*) launch	! Launch method 1=each at a different phase [0,360] 2=range of phases every 5 or 10 degrees [0,360] 3=random
 
 !!!!!!!!!! Particle-Wall interaction !!!!!!!!!
-read(30,*) seec		! SEE model, =1 Modified Vaughan, =2 Furman & Pivi, =3 Cheng w/ de Lara Re/Rr, =4 FEST3Dish?
+read(30,*) seec		! SEE model, =1 Modified Vaughan, =2 Furman & Pivi, =3 Cheng w/ de Lara Re/Rr, =4 FEST3Dish?, =5 SPARK3Dish?
 read(30,*) ReRr		! Contributions from elastically (Re) and rediffused (Rr) electrons. =1 de Lara, =2 CERN LHC report
 read(30,*) E1		! First crossover
 read(30,*) Emax		! Emax(delta=max,theta=0) in eV

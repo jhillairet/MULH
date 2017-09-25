@@ -118,16 +118,16 @@ if (seec == 1) then	!************* Vaughan model **************!
 
   endif
 
-  !if (allocated(SEYvsE)) then
-   ! call add23Darray(SEYvsE,(/0,0,1/))
-    !k = size(SEYvsE,3)
-    !SEYvsE(4,1,k) = penf1
-    !SEYvsE(4,2,k) = delta
-  !else
-   ! allocate (SEYvsE(4,2,1))
-   ! SEYvsE(4,1,1) = penf1
-    !SEYvsE(4,2,1) = delta
-  !endif
+!  if (allocated(SEYvsE)) then
+!    call add23Darray(SEYvsE,(/0,0,1/))
+!    k = size(SEYvsE,3)
+!    SEYvsE(4,1,k) = penf1
+!    SEYvsE(4,2,k) = delta
+!  else
+!    allocate (SEYvsE(4,2,1))
+!    SEYvsE(4,1,1) = penf1
+!    SEYvsE(4,2,1) = delta
+!  endif
 
   if (delta > 10) then
     write(*,*) 'high delta'
@@ -223,16 +223,16 @@ if (seec == 1) then	!************* Vaughan model **************!
       ! Reflect electron elastically
       pvf = reflect_electron(pcol,penf1*(-e),pvf1,1)
 
-      !if (allocated(SEYvsE)) then
-	!call add23Darray(SEYvsE,(/0,0,1/))
-	!k = size(SEYvsE,3)
-        !SEYvsE(1,1,k) = penf1
-        !SEYvsE(1,2,k) = delta
-      !else
-       ! allocate (SEYvsE(4,2,1))
-        !SEYvsE(1,1,1) = penf1
-        !SEYvsE(1,2,1) = delta
-      !endif
+      if (allocated(SEYvsE)) then
+	call add23Darray(SEYvsE,(/0,0,1/))
+	k = size(SEYvsE,3)
+        SEYvsE(1,1,k) = penf1
+        SEYvsE(1,2,k) = delta
+      else
+        allocate (SEYvsE(4,2,1))
+        SEYvsE(1,1,1) = penf1
+        SEYvsE(1,2,1) = delta
+      endif
 
     elseif (r >= Pe .AND. r < (Pe+Pr)) then
 
@@ -278,29 +278,29 @@ if (seec == 1) then	!************* Vaughan model **************!
       deallocate (penf)
       deallocate (vs)
 
-      !if (allocated(SEYvsE)) then
-	!call add23Darray(SEYvsE,(/0,0,1/))
-	!k = size(SEYvsE,3)
-        !SEYvsE(2,1,k) = penf1
-        !SEYvsE(2,2,k) = delta
-      !else
-       ! allocate (SEYvsE(4,2,1))
-        !SEYvsE(2,1,1) = penf1
-        !SEYvsE(2,2,1) = delta
-      !endif
+      if (allocated(SEYvsE)) then
+	call add23Darray(SEYvsE,(/0,0,1/))
+	k = size(SEYvsE,3)
+        SEYvsE(2,1,k) = penf1
+        SEYvsE(2,2,k) = delta
+      else
+        allocate (SEYvsE(4,2,1))
+        SEYvsE(2,1,1) = penf1
+        SEYvsE(2,2,1) = delta
+      endif
 
     else
          
-      !if (allocated(SEYvsE)) then
-	!call add23Darray(SEYvsE,(/0,0,1/))
-	!k = size(SEYvsE,3)
-        !SEYvsE(3,1,k) = penf1
-        !SEYvsE(3,2,k) = delta
-      !else
-       ! allocate (SEYvsE(4,2,1))
-        !SEYvsE(3,1,1) = penf1
-        !SEYvsE(3,2,1) = delta
-      !endif
+      if (allocated(SEYvsE)) then
+	call add23Darray(SEYvsE,(/0,0,1/))
+	k = size(SEYvsE,3)
+        SEYvsE(3,1,k) = penf1
+        SEYvsE(3,2,k) = delta
+      else
+        allocate (SEYvsE(4,2,1))
+        SEYvsE(3,1,1) = penf1
+        SEYvsE(3,2,1) = delta
+      endif
 
       allocate (yn(1))
       allocate (thetas(1))
@@ -312,7 +312,7 @@ if (seec == 1) then	!************* Vaughan model **************!
       pvf = 0.       ! velocity of 1 secondary electron
 
       ! Scalar parameters needed to obtain velocity components
-      call gratio(real(p_n*s,8), real(penf1/Eom,8), ans, qans, 0)
+      call gratio(real(p_n*s,8), real(penf1/Eom,8), ans, qans, 0) ! incomplete_gamma.f90
       if (atype == 8) then
         read(21,*) rt
         ans = ans*rt
@@ -381,16 +381,16 @@ if (seec == 1) then	!************* Vaughan model **************!
     endif
   elseif (s > 1) then
 
-      !if (allocated(SEYvsE)) then
-	!call add23Darray(SEYvsE,(/0,0,1/))
-	!k = size(SEYvsE,3)
-        !SEYvsE(3,1,k) = penf1
-        !SEYvsE(3,2,k) = delta
-      !else
-       ! allocate(SEYvsE(4,2,1))
-        !SEYvsE(3,1,1) = penf1
-        !SEYvsE(3,2,1) = delta
-      !endif
+      if (allocated(SEYvsE)) then
+	call add23Darray(SEYvsE,(/0,0,1/))
+	k = size(SEYvsE,3)
+        SEYvsE(3,1,k) = penf1
+        SEYvsE(3,2,k) = delta
+      else
+        allocate(SEYvsE(4,2,1))
+        SEYvsE(3,1,1) = penf1
+        SEYvsE(3,2,1) = delta
+      endif
 
     allocate (pvf(s,3))
     allocate (yn(s))
