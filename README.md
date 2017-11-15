@@ -1,7 +1,7 @@
 [![Travis Last Compilation Status](https://travis-ci.org/jhillairet/MULH.svg?branch=master)
 ](https://travis-ci.org/jhillairet/MULH)
 # MUltipactor in Lower Hybrid antenna waveguides (MULH)
-
+ 
 This code does a power sweep to calculate at which point the multipactor
 starts to develop inside a single rectangular waveguide.
 EM fields can be resolved analytically for the TE10 mode of a rectangular
@@ -30,9 +30,10 @@ the fields and particle steppers in these wide guides should be checked.
 - MULH didn't see a resonance when applaying a DC toroidal B-field equal to
 the one predicted by a gyrofrequency of 3.7GHz (Tore-Supra), while Spark3D did.
 - The trends in breakdown when DC B-fields are applied were never rigorously checked against
-FEST3D or Spark3D.
+FEST3D or Spark3D. (This work has been done by A. Placais)
 
-The MULH parent directory contains four subfolders.
+
+The MULH parent directory contains five subfolders.
  - sources: contains all the source files used in the code. subdirectory
 	active contains the latest in-use source files.
  - data: .txt files containing data used in some runs and the subdirectory
@@ -43,14 +44,18 @@ The MULH parent directory contains four subfolders.
  - test: for storing executables and other files used while testing pieces
 	of or all of the code.
 
-To run the code go to the directory where the makefile is (execs) in the
-terminal.
-Then run the following commands:
-```
-make
-export LD_LIBRARY_PATH="path to executable"
-./MULH
-```
+AP :
+ - MULHBatch: where MULH.py and MULH_parallel_batch.py are stored.
+ 
+	To run the code once run MULH.py with Python 3.6 or higher.
+	To do a parameter sweep run MULH_parallel_batch.py with Python 3.6 or higher.
+	These scripts execute the following command:
+	```
+	make
+	export LD_LIBRARY_PATH="path to executable"
+	./MULH "path_to_config_file" "output_path"
+	```
+	The config_file can be created using the create_config_file class in MULH.py.
 
 The code was developed and worked well with the gfortran compiler.
 It hasn't been tried with other compilers.
@@ -71,3 +76,11 @@ http://engineering.dartmouth.edu/~d24789f
 Spring 2011 - Spring 2012
 
 
+This code was later modified by:
+Adrien Placais
+GSCP
+IRFM, CEA Cadarache
+France
+adrien.placais@hotmail.fr
+
+April - September 2017

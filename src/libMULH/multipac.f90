@@ -45,6 +45,7 @@ type(output_s), intent(in) :: outputs
 logical, intent(inout) :: pro
 !real(long), allocatable, intent(inout) :: pvm(:,:)
 
+
 open (unit=11,file=trim(dirname)//'/scenario.txt',status='old')
 
 read(11,*) a
@@ -131,9 +132,11 @@ Nt = Np + Np*Ns			! Total number of particles tracked
 if (INT(a*1000)==8 .AND. INT(b*1000)==70) then
     r0 = 2.96		! Radial position of plasma center
     rLH = 3.93		! Radial position (in tokamak) of grill mouth
+    if(n==0) print*, 'ToreSupra_C3 detected'
 else if (INT(a*1000)==9 .AND. INT(b*1000)==72) then
     r0 = 2.96
     rLH = 3.93
+    if(n==0) print*, 'JET detected'
 end if
 
 ! Modify Vaughan model to match E1
@@ -421,12 +424,11 @@ do while (complete == 0)
 	  call plocate(px1(m,:),d4x,x3,geo,pwall,Eii,Eip,Eri,Hii,Hip,Hri)
 
 	  ! Interpolate fields from nodes to particles
-	  pB1 = interB2particle(Hx1,Hy1,Hz1,Hii,Hip,Hri,pwall)
-	  pB2 = interB2particle(Hx2,Hy2,Hz2,Hii,Hip,Hri,pwall)
+	  pB1 = interB2particle(Hx1,Hy1,Hz1,Hii,Hip,Hri,pwall,sB,geo,px1(m,3),fields)
+	  pB2 = interB2particle(Hx2,Hy2,Hz2,Hii,Hip,Hri,pwall,sB,geo,px1(m,3),fields)
 	  pE2 = interE2particle(Ex2,Ey2,Ez2,Eii,Eip,Eri,pwall)
 
 	else if (fields == 2) then
-
 	  ! Calculate analytic fields inside rectangular waveguide at times n and n-1
 	  call pFIELDSanalytic(geo,d4x,px1(m,:),wave,sB,n,pB2,pE2)
 	  call pFIELDSanalytic(geo,d4x,px1(m,:),wave,sB,n-1,pB1,pE1)
@@ -465,11 +467,10 @@ do while (complete == 0)
 
 	  if (fields == 1 .OR. fields == 3) then
             ! Interpolate additional fields needed
-	    pB0 = interB2particle(Hx0,Hy0,Hz0,Hii,Hip,Hri,pwall)
+	    pB0 = interB2particle(Hx0,Hy0,Hz0,Hii,Hip,Hri,pwall,sB,geo,px1(m,3),fields)
 	    pE1 = interE2particle(Ex1,Ey1,Ez1,Eii,Eip,Eri,pwall)
 
-          elseif (fields == 2) then
-                     
+          elseif (fields == 2) then      
 	    call pFIELDSanalytic(geo,d4x,px1(m,:),wave,sB,n-2,pB0)
                       
           endif
@@ -493,7 +494,7 @@ do while (complete == 0)
       endif	!!!!!!!!!!! end of pstat==1 if
 
       if (full .AND. sum(pstat, MASK = pstat .EQ. 3)==0 .AND. sum(pstat, MASK = pstat .EQ. 4)==0) then
-	!pact = Nt
+	write(*,*) 'Condition if pas comprise. Voir multipac.f90 ligne 498' !pact = Nt
 	exit
       endif
 
@@ -549,14 +550,15 @@ do while (complete == 0)
       pactts(pactc) = time+dt
       pactps(pactc) = pact
     endif
-        
+
     ! Store average energy along each dimension for each power run
     pvm(1) = mean(0.5*me*(pv2(:,1)*pv2(:,1))/(-e))
     pvm(2) = mean(0.5*me*(pv2(:,2)*pv2(:,2))/(-e))
     pvm(3) = mean(0.5*me*(pv2(:,3)*pv2(:,3))/(-e))
     write(24,'(F20.16,1X,F20.16,1X,F20.16)') pvm(1), pvm(2), pvm(3)
 
-    ! Determine if MP will develop or not
+    ! Determine if MP will develop or not2                                                                                                   fields
+
     if (n >= pstart+50) then     ! Because we need pacts
       complete = MPdetector(pact,pactts,pactps,Np,Nt,pstart,sB,n,time,pstat)
     endif
@@ -584,7 +586,7 @@ do while (complete == 0)
     close(unit=8)
     it = n
   endif
-  
+
 enddo		!!!!!!!!!!!! end of do while complete
 
 if (atype == 8 .OR. atype == 9) then
@@ -600,12 +602,12 @@ if (atype == 8 .OR. atype == 9) then
   endif
 
 endif
-
 !open(unit=10,file=trim(dirname)//'/SEYvsE.txt',status='unknown')
-!do i = 1,size(SEYvsE,3)
-!  write(10,13) SEYvsE(1,1,i),SEYvsE(1,2,i),SEYvsE(2,1,i), SEYvsE(2,2,i),SEYvsE(3,1,i),SEYvsE(3,2,i),SEYvsE(4,1,i),SEYvsE(4,2,i)
-!enddo
- !close(unit=10)
+open(unit=666,file='../data/SEYvsE3.txt',status='unknown')
+do i = 1,size(SEYvsE,3)
+  write(666,13) SEYvsE(1,1,i),SEYvsE(1,2,i),SEYvsE(2,1,i), SEYvsE(2,2,i),SEYvsE(3,1,i),SEYvsE(3,2,i),SEYvsE(4,1,i),SEYvsE(4,2,i)
+enddo
+close(unit=666)
 
 !!!!!! Save setup !!!!!!
 open(unit=13,file=trim(dirname)//'/setup.txt',status='unknown')
