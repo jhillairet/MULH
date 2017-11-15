@@ -30,7 +30,8 @@ the fields and particle steppers in these wide guides should be checked.
 - MULH didn't see a resonance when applaying a DC toroidal B-field equal to
 the one predicted by a gyrofrequency of 3.7GHz (Tore-Supra), while Spark3D did.
 - The trends in breakdown when DC B-fields are applied were never rigorously checked against
-FEST3D or Spark3D.
+FEST3D or Spark3D. (This work has been done by A. Placais)
+
 
 The MULH parent directory contains five subfolders.
  - sources: contains all the source files used in the code. subdirectory
@@ -42,17 +43,19 @@ The MULH parent directory contains five subfolders.
  - execs: where the executables are placed during compilation
  - test: for storing executables and other files used while testing pieces
 	of or all of the code.
-AP:  - MULHBatch: where MULH.py and MULH_parallel_batch.py are
-AP: 
-AP: To run the code once run MULH.py with Python 3.6 or higher.
-AP: To do a parameter sweep run MULH_parallel_batch.py with Python 3.6 or higher.
-AP: These scripts run the folowwing command:
-AP: ```
-AP: make
-AP: export LD_LIBRARY_PATH="path to executable"
-AP: ./MULH path_to_config_file output_path
-AP: ```
-AP: The config_file can be created using the create_config_file class in MULH.py.
+
+AP :
+ - MULHBatch: where MULH.py and MULH_parallel_batch.py are stored.
+ 
+	To run the code once run MULH.py with Python 3.6 or higher.
+	To do a parameter sweep run MULH_parallel_batch.py with Python 3.6 or higher.
+	These scripts execute the following command:
+	```
+	make
+	export LD_LIBRARY_PATH="path to executable"
+	./MULH "path_to_config_file" "output_path"
+	```
+	The config_file can be created using the create_config_file class in MULH.py.
 
 The code was developed and worked well with the gfortran compiler.
 It hasn't been tried with other compilers.
@@ -78,5 +81,6 @@ Adrien Placais
 GSCP
 IRFM, CEA Cadarache
 France
-adrien.placais@centrale-marseille.fr
+adrien.placais@hotmail.fr
 
+April - September 2017
